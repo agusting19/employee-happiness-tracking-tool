@@ -1,11 +1,14 @@
-import './App.css'
+import './App.css';
+import Navbar from './components/Navbar';
+import { Home } from './pages';
 
 function App() {
   return (
     <>
-      WEPA
+      <Navbar />
+      <Home />
     </>
   );
 }
 
-export default App
+export default App;
