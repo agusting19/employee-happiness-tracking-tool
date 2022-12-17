@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { addFavorites, addPeople } from '@/redux/states';
 import { DataGrid, GridRenderCellParams } from '@mui/x-data-grid';
 import Checkbox from '@mui/material/Checkbox';
 import { People } from '@/data';
@@ -9,12 +11,14 @@ export interface HomeInterface {}
 const Home: React.FC<HomeInterface> = () => {
   const [selectedPeople, setSelectedPeople] = useState<Person[]>([]);
   const pageSize = 5;
+  const dispatch = useDispatch();
 
-  const findPerson = (person: Person) => !!selectedPeople.find(p => p.id === person.id);
-  const filterPerson = (person: Person) => selectedPeople.filter(p => p.id !== person.id);
+  const findPerson = (person: Person) => !!selectedPeople.find((p) => p.id === person.id);
+  const filterPerson = (person: Person) => selectedPeople.filter((p) => p.id !== person.id);
 
   const handleChange = (person: Person) => {
     const filteredPeople = findPerson(person) ? filterPerson(person) : [...selectedPeople, person];
+    dispatch(addFavorites(filteredPeople));
     setSelectedPeople(filteredPeople);
   };
 
@@ -49,6 +53,10 @@ const Home: React.FC<HomeInterface> = () => {
       renderCell: (params: GridRenderCellParams) => <>{params.value}</>,
     },
   ];
+
+  useEffect(() => {
+    dispatch(addPeople(People));
+  }, []);
 
   return (
     <div>
