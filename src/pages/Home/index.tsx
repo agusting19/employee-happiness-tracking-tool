@@ -1,14 +1,34 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { DataGrid, GridRenderCellParams } from '@mui/x-data-grid';
+import Checkbox from '@mui/material/Checkbox';
 import { People } from '@/data';
-
-console.log(0.1 + 0.2 === 0.3);
+import { Person } from '@/models';
 
 export interface HomeInterface {}
 
 const Home: React.FC<HomeInterface> = () => {
+  const [selectedPeople, setSelectedPeople] = useState<Person[]>([]);
   const pageSize = 5;
+
+  const findPerson = (person: Person) => !!selectedPeople.find(p => p.id === person.id);
+  const filterPerson = (person: Person) => selectedPeople.filter(p => p.id !== person.id);
+
+  const handleChange = (person: Person) => {
+    const filteredPeople = findPerson(person) ? filterPerson(person) : [...selectedPeople, person];
+    setSelectedPeople(filteredPeople);
+  };
+
   const columns = [
+    {
+      field: 'actions',
+      type: 'actions',
+      sortable: false,
+      headerName: '',
+      width: 50,
+      renderCell: (params: GridRenderCellParams) => (
+        <>{<Checkbox size="small" checked={findPerson(params.row)} onChange={() => handleChange(params.row)} />}</>
+      ),
+    },
     {
       field: 'name',
       headerName: 'Name',
