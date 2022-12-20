@@ -7,8 +7,8 @@ interface Props {
   children: React.ReactNode;
 }
 
-export const dialogOpenSubject$ = new SubjectManager<Boolean>();
-export const dialogCloseSubject$ = new SubjectManager<Boolean>();
+export const dialogOpenSubject$ = new SubjectManager<boolean>();
+export const dialogCloseSubject$ = new SubjectManager<boolean>();
 
 export const CustomDialog = ({ children }: Props) => {
   const [open, setOpen] = useState(false);
@@ -16,8 +16,8 @@ export const CustomDialog = ({ children }: Props) => {
   let closeSubject$ = new Subscription();
 
   useEffect(() => {
-    openSubject$ = dialogOpenSubject$.getSubject.subscribe(() => {});
-    closeSubject$ = dialogCloseSubject$.getSubject.subscribe(() => {});
+    openSubject$ = dialogOpenSubject$.getSubject.subscribe(() => handleClickOpen());
+    closeSubject$ = dialogCloseSubject$.getSubject.subscribe(() => handleClose());
 
     return () => {
       openSubject$.unsubscribe();
@@ -25,17 +25,24 @@ export const CustomDialog = ({ children }: Props) => {
     };
   }, []);
 
-  const handleClickOpen = () => setOpen(true);
-  const handleClickClose = () => setOpen(false);
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
 
-  const handleExit = () => (dialogCloseSubject$.setSubject = false);
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const handleExit = () => {
+    dialogCloseSubject$.setSubject = false;
+  };
 
   return (
     <div>
       <Dialog
         open={open}
         onClose={() => handleExit()}
-        aria-labelleadby="alert-dialog-title"
+        aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
         fullWidth
       >
@@ -44,3 +51,5 @@ export const CustomDialog = ({ children }: Props) => {
     </div>
   );
 };
+
+export default CustomDialog;
